@@ -1,0 +1,12 @@
+body {
+  width: 100vh;
+  height: 100vw;
+  overflow: hidden;
+}
+
+@font-face {
+  font-family: "led";
+  src: url("/fonts/7LED.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
