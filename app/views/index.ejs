@@ -32,18 +32,13 @@
         <div class="score-container">
           <div class="avatar">
             <img src="/images/logo-team/1.jpg" id="avatar-team-1" />
-            <button id="name-team-1">Đội Bla bla</button>
-            <div class="dropdown" id="select-team-1">
-              <button>Đội 1</button>
-              <button>Đội 2</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-            </div>
+            <button
+              id="name-team-1"
+              onclick="togglePopupSelectTeam('select-team-1')"
+            >
+              Đội Bla bla
+            </button>
+            <div class="dropdown" id="select-team-1"></div>
           </div>
           <div class="score">
             <button id="score-1-1">00:00</button>
@@ -66,25 +61,128 @@
           </div>
           <div class="avatar">
             <img src="/images/logo-team/1.jpg" id="avatar-team-2" />
-            <button id="name-team-2">Đội Bla bla</button>
-            <div class="dropdown" id="select-team-2">
-              <button>Đội 1</button>
-              <button>Đội 2</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-              <button>Đội 3</button>
-            </div>
+            <button
+              id="name-team-2"
+              onclick="togglePopupSelectTeam('select-team-2')"
+            >
+              Đội Bla bla
+            </button>
+            <div class="dropdown" id="select-team-2"></div>
           </div>
         </div>
       </div>
     </div>
   </body>
   <script>
+    // CONSTANTS
+    const listTeam = [
+      {
+        name: "Đội 1",
+        avatar: "/images/logo-team/1.jpg",
+      },
+      {
+        name: "Đội 2",
+        avatar: "/images/logo-team/2.jpg",
+      },
+      {
+        name: "Đội 3",
+        avatar: "/images/logo-team/1.jpg",
+      },
+      {
+        name: "Đội 4",
+        avatar: "/images/logo-team/1.jpg",
+      },
+    ];
+    let team1 = listTeam[0];
+    let team2 = listTeam[1];
+    let timeStartTeam1 = null;
+    let timeStartTeam2 = null;
+    // Define DOM
+    let avatarTeam1Element = null;
+    let nameTeam1Element = null;
+    let scoreTeam1_1 = null;
+    let scoreTeam1_2 = null;
+    let scoreTeam1_3 = null;
+    let avatarTeam2Element = null;
+    let nameTeam1E2ement = null;
+    let scoreTeam2_1 = null;
+    let scoreTeam2_2 = null;
+    let scoreTeam2_3 = null;
+    // handle when init
+    document.addEventListener("DOMContentLoaded", function () {
+      // Define DOM
+      avatarTeam1Element = document.getElementById("avatar-team-1");
+      nameTeam1Element = document.getElementById("name-team-1");
+      scoreTeam1_1 = document.getElementById("score-1-1");
+      scoreTeam1_2 = document.getElementById("score-1-2");
+      scoreTeam1_3 = document.getElementById("score-1-3");
+      avatarTeam2Element = document.getElementById("avatar-team-2");
+      nameTeam1E2ement = document.getElementById("name-team-2");
+      scoreTeam2_1 = document.getElementById("score-2-1");
+      scoreTeam2_2 = document.getElementById("score-2-2");
+      scoreTeam2_3 = document.getElementById("score-2-3");
+
+      for (const iterator of listTeam) {
+        appendTeamOption("select-team-1", "button", iterator);
+        appendTeamOption("select-team-2", "button", iterator);
+      }
+      const avatarTeam1 = document.getElementById("avatar-team-1");
+      avatarTeam1.src = team1.avatar;
+      const avatarTeam2 = document.getElementById("avatar-team-2");
+      avatarTeam2.src = team2.avatar;
+    });
+
     // HANDLE UI
+    function togglePopupSelectTeam(id) {
+      const dropdownDom = document.getElementById(id);
+      if (dropdownDom) {
+        dropdownDom.classList.toggle("active");
+      }
+    }
+    function changeHtmlContent(dom, newContent) {
+      if (!dom) return;
+      dom.innerHTML = newContent;
+    }
+    function changeHtmlContentById(id, newContent) {
+      const dom = document.getElementById(id);
+      if (!dom) return;
+      dom.innerHTML = newContent;
+    }
+    function appendChild(parentElementId, tag, content) {
+      const parentElement = document.getElementById(parentElementId);
+      if (!parentElement) return;
+      const newElement = document.createElement(tag);
+      newElement.textContent = content;
+      parentElement.appendChild(newElement);
+    }
+    function appendTeamOption(parentElementId, tag, team) {
+      const parentElement = document.getElementById(parentElementId);
+      if (!parentElement) return;
+      const newElement = document.createElement(tag);
+      newElement.textContent = team.name;
+      newElement.addEventListener("click", choiceTeam);
+      parentElement.appendChild(newElement);
+    }
+    function choiceTeam(e) {
+      const parentId = e.target.parentNode.id;
+      const teamNameSelected = e.target.innerHTML;
+      const teamSelected = listTeam.find(
+        (item) => item.name === teamNameSelected
+      );
+      if (!teamSelected) return;
+      if (parentId == "select-team-1") {
+        team1 = teamSelected;
+        avatarTeam1Element.src = teamSelected.avatar;
+        nameTeam1Element.innerHTML = teamSelected.name;
+      } else {
+        team2 = teamSelected;
+        avatarTeam2Element.src = teamSelected.avatar;
+        nameTeam2Element.innerHTML = teamSelected.name;
+      }
+      console.log(getParentId, teamSelected);
+    }
+    function loadTimeStoraged(params) {}
+
     // HANDLE FUNCTION
     function getTimeNow() {
       return Date.now();
