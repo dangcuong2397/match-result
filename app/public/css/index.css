@@ -175,10 +175,9 @@ body {
   left: 105%;
   top: 70%;
   z-index: 2;
-  background-color: #ffffff80;
+  background-color: #ffffff40;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.1vh;
   display: none;
 }
 .avatar > .dropdown.active {
@@ -199,6 +198,9 @@ body {
   text-align: center;
   border: 1px solid #333;
   border-radius: 5px;
+}
+.avatar > .dropdown > button + button {
+  margin-top: 0.2vh;
 }
 
 .score {
