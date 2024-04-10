@@ -2,7 +2,7 @@ require("dotenv/config");
 const cors = require("cors");
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
 app.set("views", "app/views");
@@ -13,7 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // WEBSOCKET
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 8080 });
+const webSocketPort = process.env.WS_PORT || 9088;
+const wss = new WebSocket.Server({ port: webSocketPort });
 const clients = [];
 wss.on("connection", (ws) => {
   clients.push(ws);
