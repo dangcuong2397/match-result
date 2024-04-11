@@ -120,8 +120,9 @@
       scoreTeam1_1 = document.getElementById("score-1-1");
       scoreTeam1_2 = document.getElementById("score-1-2");
       scoreTeam1_3 = document.getElementById("score-1-3");
+
       avatarTeam2Element = document.getElementById("avatar-team-2");
-      nameTeam1E2ement = document.getElementById("name-team-2");
+      nameTeam2Element = document.getElementById("name-team-2");
       scoreTeam2_1 = document.getElementById("score-2-1");
       scoreTeam2_2 = document.getElementById("score-2-2");
       scoreTeam2_3 = document.getElementById("score-2-3");
@@ -131,10 +132,14 @@
         appendTeamOption("select-team-2", "button", iterator);
       }
       // update avatar
-      const avatarTeam1 = document.getElementById("avatar-team-1");
-      avatarTeam1.src = team1.avatar;
-      const avatarTeam2 = document.getElementById("avatar-team-2");
-      avatarTeam2.src = team2.avatar;
+      avatarTeam1Element.src = team1.avatar;
+      avatarTeam2Element.src = team2.avatar;
+      // update team name
+      nameTeam1Element.innerHTML = team1.name;
+      nameTeam2Element.innerHTML = team2.name;
+      // restore score
+      resetScoreBlock("team-1", team1.name);
+      resetScoreBlock("team-2", team2.name);
     });
 
     // HANDLE UI
@@ -179,10 +184,12 @@
         team1 = teamSelected;
         avatarTeam1Element.src = teamSelected.avatar;
         nameTeam1Element.innerHTML = teamSelected.name;
+        resetScoreBlock("team-1", teamSelected.name);
       } else {
         team2 = teamSelected;
         avatarTeam2Element.src = teamSelected.avatar;
         nameTeam2Element.innerHTML = teamSelected.name;
+        resetScoreBlock("team-2", teamSelected.name);
       }
       console.log(getParentId, teamSelected);
     }
@@ -242,6 +249,7 @@
           clearInterval(intervalClockTeam1);
           const dataSave = {
             team: team1.name,
+            timestampStart: timeStartTeam1,
             timeStart: timestampToTimeString(timeStartTeam1),
             timeStop: timestampToTimeString(stopTime),
             timeRunningMs: stopTime - timeStartTeam1,
@@ -275,6 +283,7 @@
           clearInterval(intervalClockTeam2);
           const dataSave = {
             team: team2.name,
+            timestampStart: timeStartTeam2,
             timeStart: timestampToTimeString(timeStartTeam2),
             timeStop: timestampToTimeString(stopTime),
             timeRunningMs: stopTime - timeStartTeam2,
@@ -321,6 +330,39 @@
       return `${numberOfMinus.toString().padStart(2, "0")}:${numberOfSecond
         .toString()
         .padStart(2, "0")}`;
+    }
+
+    function resetScoreBlock(teamId, teamName) {
+      const teamBlock = document.getElementById(teamId);
+      if (!teamBlock) return null;
+      const listScoreTimeBlock = teamBlock.getElementsByClassName("score-time");
+      for (let i = 0; i < listScoreTimeBlock.length; i++) {
+        listScoreTimeBlock[i].innerHTML = "00:00";
+      }
+      const dataStorageDoor1 = localStorage.getItem("door1");
+      const dataStorageDoor1Object = dataStorageDoor1
+        ? JSON.parse(dataStorageDoor1)
+        : [];
+      const dataStorageDoor2 = localStorage.getItem("door2");
+      const dataStorageDoor2Object = dataStorageDoor2
+        ? JSON.parse(dataStorageDoor2)
+        : [];
+      const dataStorage = [
+        ...dataStorageDoor1Object,
+        ...dataStorageDoor2Object,
+      ];
+      console.log(dataStorage, teamName);
+      const dataTeam = dataStorage
+        .filter((item) => item.team === teamName)
+        .sort(sortByTimestampStart);
+      console.log(dataTeam);
+      for (let i = 0; i < dataTeam.length; i++) {
+        listScoreTimeBlock[i].innerHTML = dataTeam[i].timeRunningString;
+      }
+    }
+
+    function sortByTimestampStart(a, b) {
+      return a.timestampStart - b.timestampStart;
     }
   </script>
 </html>
