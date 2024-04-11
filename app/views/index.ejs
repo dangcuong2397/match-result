@@ -41,9 +41,9 @@
             <div class="dropdown" id="select-team-1"></div>
           </div>
           <div class="score">
-            <button id="score-1-1">00:00</button>
-            <button id="score-1-2">00:00</button>
-            <button id="score-1-3">00:00</button>
+            <button class="score-time" id="score-1-1">00:00</button>
+            <button class="score-time" id="score-1-2">00:00</button>
+            <button class="score-time" id="score-1-3">00:00</button>
           </div>
         </div>
       </div>
@@ -55,9 +55,9 @@
         </div>
         <div class="score-container">
           <div class="score">
-            <button id="score-2-1">00:00</button>
-            <button id="score-2-2">00:00</button>
-            <button id="score-2-3">00:00</button>
+            <button class="score-time" id="score-2-1">00:00</button>
+            <button class="score-time" id="score-2-2">00:00</button>
+            <button class="score-time" id="score-2-3">00:00</button>
           </div>
           <div class="avatar">
             <img src="/images/logo-team/1.jpg" id="avatar-team-2" />
@@ -82,7 +82,7 @@
       },
       {
         name: "Đội 2",
-        avatar: "/images/logo-team/2.jpg",
+        avatar: "/images/logo-team/1.jpg",
       },
       {
         name: "Đội 3",
@@ -97,17 +97,21 @@
     let team2 = listTeam[1];
     let timeStartTeam1 = null;
     let timeStartTeam2 = null;
+    let intervalClockTeam1 = null;
+    let intervalClockTeam2 = null;
     // Define DOM
     let avatarTeam1Element = null;
     let nameTeam1Element = null;
     let scoreTeam1_1 = null;
     let scoreTeam1_2 = null;
     let scoreTeam1_3 = null;
+    let timeRunningTeam1Element = null;
     let avatarTeam2Element = null;
     let nameTeam1E2ement = null;
     let scoreTeam2_1 = null;
     let scoreTeam2_2 = null;
     let scoreTeam2_3 = null;
+    let timeRunningTeam2Element = null;
     // handle when init
     document.addEventListener("DOMContentLoaded", function () {
       // Define DOM
@@ -126,6 +130,7 @@
         appendTeamOption("select-team-1", "button", iterator);
         appendTeamOption("select-team-2", "button", iterator);
       }
+      // update avatar
       const avatarTeam1 = document.getElementById("avatar-team-1");
       avatarTeam1.src = team1.avatar;
       const avatarTeam2 = document.getElementById("avatar-team-2");
@@ -199,15 +204,123 @@
     ws.onmessage = function (event) {
       const data = JSON.parse(event.data);
       console.log(data);
-      displayMessage(data);
+      if (data.topic === "update-match-result") {
+        updateMatchResult(data);
+      }
+      displayMessage();
     };
 
     // Hiển thị dữ liệu nhận được từ WebSocket
-    function displayMessage(data) {
-      const messagesDiv = document.getElementById("messages");
-      const messageElement = document.createElement("div");
-      messageElement.textContent = `ID: ${data.id}, Status: ${data.status}`;
-      messagesDiv.appendChild(messageElement);
+    function updateMatchResult(data) {
+      const id = data.id;
+      const status = data.status;
+      if (!id || !status) {
+        return;
+      }
+      if (id === "door1") {
+        if (status === "start") {
+          timeStartTeam1 = getTimeNow();
+          timeRunningTeam1Element = getBlockRunningEmpty("team-1");
+          if (!timeRunningTeam1Element) return;
+          intervalClockTeam1 = setInterval(() => {
+            now = getTimeNow();
+            timeRunningTeam1Element.innerHTML = getTimeRunningSTring(
+              timeStartTeam1,
+              now
+            );
+          }, 250);
+        }
+        if (status === "stop") {
+          const stopTime = getTimeNow();
+          if (!timeStartTeam1) {
+            console.error(`Không thấy thời gian start ${id}`);
+          }
+          const timeRunning = getTimeRunningSTring(timeStartTeam1, stopTime);
+          if (timeRunningTeam1Element) {
+            timeRunningTeam1Element.innerHTML = timeRunning;
+          }
+          clearInterval(intervalClockTeam1);
+          const dataSave = {
+            team: team1.name,
+            timeStart: timestampToTimeString(timeStartTeam1),
+            timeStop: timestampToTimeString(stopTime),
+            timeRunningMs: stopTime - timeStartTeam1,
+            timeRunningString: timeRunning,
+          };
+          saveDataToStorage(id, dataSave);
+        }
+      }
+      if (id === "door2") {
+        if (status === "start") {
+          timeStartTeam2 = getTimeNow();
+          timeRunningTeam2Element = getBlockRunningEmpty("team-2");
+          if (!timeRunningTeam2Element) return;
+          intervalClockTeam2 = setInterval(() => {
+            now = getTimeNow();
+            timeRunningTeam2Element.innerHTML = getTimeRunningSTring(
+              timeStartTeam2,
+              now
+            );
+          }, 250);
+        }
+        if (status === "stop") {
+          const stopTime = getTimeNow();
+          if (!timeStartTeam2) {
+            console.error(`Không thấy thời gian start ${id}`);
+          }
+          const timeRunning = getTimeRunningSTring(timeStartTeam2, stopTime);
+          if (timeRunningTeam2Element) {
+            timeRunningTeam2Element.innerHTML = timeRunning;
+          }
+          clearInterval(intervalClockTeam2);
+          const dataSave = {
+            team: team2.name,
+            timeStart: timestampToTimeString(timeStartTeam2),
+            timeStop: timestampToTimeString(stopTime),
+            timeRunningMs: stopTime - timeStartTeam2,
+            timeRunningString: timeRunning,
+          };
+          saveDataToStorage(id, dataSave);
+        }
+      }
+    }
+
+    function timestampToTimeString(timestamp) {
+      const date = new Date(timestamp);
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      const seconds = date.getSeconds().toString().padStart(2, "0");
+      return `${hours}:${minutes}:${seconds}`;
+    }
+
+    function saveDataToStorage(id, data) {
+      const dataStorageString = localStorage.getItem(id);
+      const dataStorageObject = dataStorageString
+        ? JSON.parse(dataStorageString)
+        : [];
+      dataStorageObject.push(data);
+      localStorage.setItem(id, JSON.stringify(dataStorageObject));
+    }
+
+    function getBlockRunningEmpty(team) {
+      const teamBlock = document.getElementById(team);
+      if (!teamBlock) return null;
+      const listScoreTimeBlock = teamBlock.getElementsByClassName("score-time");
+      for (let i = 0; i < listScoreTimeBlock.length; i++) {
+        if (listScoreTimeBlock[i].innerHTML.trim() === "00:00") {
+          return listScoreTimeBlock[i];
+        }
+      }
+    }
+
+    function getTimeRunningSTring(startTime, stopTime) {
+      const timeRunning = stopTime - startTime;
+      let numberOfSecond = Math.floor(timeRunning / 1000);
+      const numberOfMinus = Math.floor(numberOfSecond / 60);
+      numberOfSecond = numberOfSecond - numberOfMinus * 60;
+      return `${numberOfMinus.toString().padStart(2, "0")}:${numberOfSecond
+        .toString()
+        .padStart(2, "0")}`;
     }
   </script>
 </html>
