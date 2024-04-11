@@ -36,6 +36,9 @@ const sendToAllClients = (message) => {
 app.get("/", (req, res) => {
   res.render("index");
 });
+app.get("/score", (req, res) => {
+  res.render("score");
+});
 
 app.get("/api/v1/update-match-result", (req, res) => {
   try {

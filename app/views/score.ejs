@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuộc thi lập trinh robot 2024</title>
+    <link rel="stylesheet" href="/css/common.css" />
+    <style>
+      th,
+      td {
+        padding: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h2 style="margin: 20px 0px 7px 100px">Tổng hợp kết quả</h2>
+      <table id="table">
+        <tr>
+          <th>Tên đội</th>
+          <th>Thời gian xuất phát</th>
+          <th>Thời gian chạy MM:ss</th>
+          <th>Thời gian chạy Ms</th>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <h2 style="margin: 50px 0px 7px 100px">Tổng hợp xếp hạng</h2>
+      <table id="rank">
+        <tr>
+          <th>Tên đội</th>
+          <th>Thời gian xuất phát</th>
+          <th>Thời gian chạy MM:ss</th>
+          <th>Thời gian chạy Ms</th>
+        </tr>
+      </table>
+    </div>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const dataStorageDoor1 = localStorage.getItem("door1");
+      const dataStorageDoor1Object = dataStorageDoor1
+        ? JSON.parse(dataStorageDoor1)
+        : [];
+      const dataStorageDoor2 = localStorage.getItem("door2");
+      const dataStorageDoor2Object = dataStorageDoor2
+        ? JSON.parse(dataStorageDoor2)
+        : [];
+      const dataStorage = [
+        ...dataStorageDoor1Object,
+        ...dataStorageDoor2Object,
+      ];
+
+      const dataTeam = dataStorage.sort(sortScore);
+      for (const iterator of dataTeam) {
+        appendRow("table", iterator);
+      }
+
+      for (const iterator of dataStorage.sort(sortRank)) {
+        appendRow("rank", iterator);
+      }
+    });
+
+    function sortScore(a, b) {
+      if (a.team < b.team) return -1;
+      if (a.team > b.team) return 1;
+      return a.timestampStart - b.timestampStart;
+    }
+    function sortRank(a, b) {
+      return a.timeRunningMs - b.timeRunningMs;
+    }
+
+    function appendRow(id, data) {
+      const parentElement = document.getElementById(id);
+      if (!parentElement) return;
+      const newRow = document.createElement("tr");
+
+      const teamCell = document.createElement("td");
+      teamCell.textContent = data.team;
+      newRow.appendChild(teamCell);
+
+      const timeStartCell = document.createElement("td");
+      timeStartCell.textContent = data.timeStart;
+      newRow.appendChild(timeStartCell);
+
+      const timeRunningCell = document.createElement("td");
+      timeRunningCell.textContent = data.timeRunningString;
+      newRow.appendChild(timeRunningCell);
+
+      const timeRunningMsCell = document.createElement("td");
+      timeRunningMsCell.textContent = data.timeRunningMs;
+      newRow.appendChild(timeRunningMsCell);
+
+      parentElement.appendChild(newRow);
+    }
+  </script>
+</html>

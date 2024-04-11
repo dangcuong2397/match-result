@@ -351,11 +351,9 @@
         ...dataStorageDoor1Object,
         ...dataStorageDoor2Object,
       ];
-      console.log(dataStorage, teamName);
       const dataTeam = dataStorage
         .filter((item) => item.team === teamName)
         .sort(sortByTimestampStart);
-      console.log(dataTeam);
       for (let i = 0; i < dataTeam.length; i++) {
         listScoreTimeBlock[i].innerHTML = dataTeam[i].timeRunningString;
       }
