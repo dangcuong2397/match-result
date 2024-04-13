@@ -10,13 +10,14 @@
   <body>
     <div id="title">
       <div class="logo-box">
-        <div class="logo">
+        <button class="logo" onclick="goToScore()">
           <img src="/images/logo_PTIT.png" />
-        </div>
-        <div class="logo">
+        </button>
+        <button class="logo" onclick="goToScore()">
           <img src="/images/logokhoadt.png" />
-        </div>
+        </button>
       </div>
+
       <div class="text-title">
         <h1>Vòng sơ loại cuộc thi lập trình robot 2024</h1>
         <p>Khoa kỹ thuật Điện tử I</p>
@@ -184,11 +185,15 @@
         team1 = teamSelected;
         avatarTeam1Element.src = teamSelected.avatar;
         nameTeam1Element.innerHTML = teamSelected.name;
+        clearInterval(intervalClockTeam1);
+        timeStartTeam1 = null;
         resetScoreBlock("team-1", teamSelected.name);
       } else {
         team2 = teamSelected;
         avatarTeam2Element.src = teamSelected.avatar;
         nameTeam2Element.innerHTML = teamSelected.name;
+        clearInterval(intervalClockTeam2);
+        timeStartTeam2 = null;
         resetScoreBlock("team-2", teamSelected.name);
       }
       console.log(getParentId, teamSelected);
@@ -214,7 +219,6 @@
       if (data.topic === "update-match-result") {
         updateMatchResult(data);
       }
-      displayMessage();
     };
 
     // Hiển thị dữ liệu nhận được từ WebSocket
@@ -256,6 +260,7 @@
             timeRunningString: timeRunning,
           };
           saveDataToStorage(id, dataSave);
+          timeStartTeam2 = null;
         }
       }
       if (id === "door2") {
@@ -290,6 +295,7 @@
             timeRunningString: timeRunning,
           };
           saveDataToStorage(id, dataSave);
+          timeStartTeam2 = null;
         }
       }
     }
@@ -361,6 +367,17 @@
 
     function sortByTimestampStart(a, b) {
       return a.timestampStart - b.timestampStart;
+    }
+
+    function removeScoreTimeBlock(e) {
+      const element = e.target;
+      const id = element.id;
+      splitData = id.split("-");
+    }
+
+    function goToScore() {
+      console.log("first");
+      window.open("/score", "_blank");
     }
   </script>
 </html>
