@@ -250,9 +250,15 @@
             console.error(`Không thấy thời gian start ${id}`);
             return;
           }
-          const timeRunning = runningTimeEsp
-            ? getTimeRunningSTring(0, Number(runningTimeEsp))
-            : getTimeRunningSTring(timeStartTeam1, stopTime);
+          let timeRunningMs = 0;
+          let timeRunning = 0;
+          if (runningTimeEsp) {
+            timeRunningMs = Number(runningTimeEsp);
+            timeRunning = getTimeRunningSTring(Number(runningTimeEsp), 0);
+          } else {
+            timeRunningMs = stopTime - timeStartTeam1;
+            timeRunning = getTimeRunningSTring(timeStartTeam1, stopTime);
+          }
           if (timeRunningTeam1Element) {
             timeRunningTeam1Element.innerHTML = timeRunning;
           }
@@ -262,7 +268,7 @@
             timestampStart: timeStartTeam1,
             timeStart: timestampToTimeString(timeStartTeam1),
             timeStop: timestampToTimeString(stopTime),
-            timeRunningMs: stopTime - timeStartTeam1,
+            timeRunningMs,
             timeRunningString: timeRunning,
           };
           saveDataToStorage(id, dataSave);
@@ -292,9 +298,15 @@
             console.error(`Không thấy thời gian start ${id}`);
             return;
           }
-          const timeRunning = runningTimeEsp
-            ? getTimeRunningSTring(Number(runningTimeEsp), 0)
-            : getTimeRunningSTring(timeStartTeam2, stopTime);
+          let timeRunningMs = 0;
+          let timeRunning = 0;
+          if (runningTimeEsp) {
+            timeRunningMs = Number(runningTimeEsp);
+            timeRunning = getTimeRunningSTring(Number(runningTimeEsp), 0);
+          } else {
+            timeRunningMs = stopTime - timeStartTeam2;
+            timeRunning = getTimeRunningSTring(timeStartTeam2, stopTime);
+          }
           if (timeRunningTeam2Element) {
             timeRunningTeam2Element.innerHTML = timeRunning;
           }
@@ -304,7 +316,7 @@
             timestampStart: timeStartTeam2,
             timeStart: timestampToTimeString(timeStartTeam2),
             timeStop: timestampToTimeString(stopTime),
-            timeRunningMs: stopTime - timeStartTeam2,
+            timeRunningMs,
             timeRunningString: timeRunning,
           };
           saveDataToStorage(id, dataSave);
