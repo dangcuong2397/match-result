@@ -60,7 +60,14 @@ app.get("/api/v1/update-match-result", (req, res) => {
       status,
       runningTime,
     });
-    sendToAllClients(payload);
+    if (stt === "start") {
+      setTimeout(() => {
+        sendToAllClients(payload);
+      }, 1000);
+    } else {
+      sendToAllClients(payload);
+    }
+
     res.status(200).send("");
   } catch (error) {
     res.status(500).send(error);
