@@ -224,6 +224,7 @@
     function updateMatchResult(data) {
       const id = data.id;
       const status = data.status;
+      const runningTimeEsp = data.runningTime;
       if (!id || !status) {
         return;
       }
@@ -249,7 +250,9 @@
             console.error(`Không thấy thời gian start ${id}`);
             return;
           }
-          const timeRunning = getTimeRunningSTring(timeStartTeam1, stopTime);
+          const timeRunning = runningTimeEsp
+            ? getTimeRunningSTring(Number(runningTimeEsp), 0)
+            : getTimeRunningSTring(timeStartTeam1, stopTime);
           if (timeRunningTeam1Element) {
             timeRunningTeam1Element.innerHTML = timeRunning;
           }
@@ -289,7 +292,9 @@
             console.error(`Không thấy thời gian start ${id}`);
             return;
           }
-          const timeRunning = getTimeRunningSTring(timeStartTeam2, stopTime);
+          const timeRunning = runningTimeEsp
+            ? getTimeRunningSTring(Number(runningTimeEsp), 0)
+            : getTimeRunningSTring(timeStartTeam2, stopTime);
           if (timeRunningTeam2Element) {
             timeRunningTeam2Element.innerHTML = timeRunning;
           }

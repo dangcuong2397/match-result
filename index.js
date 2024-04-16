@@ -44,6 +44,7 @@ app.get("/api/v1/update-match-result", (req, res) => {
   try {
     const id = req.query.id;
     const status = req.query.stt;
+    const runningTime = req.query.runningTime;
 
     if (!id) {
       res.status(400).send("id not found");
@@ -57,6 +58,7 @@ app.get("/api/v1/update-match-result", (req, res) => {
       topic: "update-match-result",
       id,
       status,
+      runningTime,
     });
     sendToAllClients(payload);
     res.status(200).send("");
