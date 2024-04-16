@@ -230,19 +230,21 @@
       }
       if (id === "door1") {
         if (status === "start") {
-          timeStartTeam1 = getTimeNow();
-          timeRunningTeam1Element = getBlockRunningEmpty("team-1");
-          if (!timeRunningTeam1Element) {
-            timeStartTeam1 = null;
-            return;
-          }
-          intervalClockTeam1 = setInterval(() => {
-            now = getTimeNow();
-            timeRunningTeam1Element.innerHTML = getTimeRunningSTring(
-              timeStartTeam1,
-              now
-            );
-          }, 250);
+          setTimeout(() => {
+            timeStartTeam1 = getTimeNow();
+            timeRunningTeam1Element = getBlockRunningEmpty("team-1");
+            if (!timeRunningTeam1Element) {
+              timeStartTeam1 = null;
+              return;
+            }
+            intervalClockTeam1 = setInterval(() => {
+              now = getTimeNow();
+              timeRunningTeam1Element.innerHTML = getTimeRunningSTring(
+                timeStartTeam1,
+                now
+              );
+            }, 250);
+          }, 1000);
         }
         if (status === "stop") {
           const stopTime = getTimeNow();
@@ -277,20 +279,22 @@
       }
       if (id === "door2") {
         if (status === "start") {
-          timeStartTeam2 = getTimeNow();
-          timeRunningTeam2Element = getBlockRunningEmpty("team-2");
-          if (!timeRunningTeam2Element) {
-            timeStartTeam2 = null;
-            return;
-          }
+          setTimeout(() => {
+            timeStartTeam2 = getTimeNow();
+            timeRunningTeam2Element = getBlockRunningEmpty("team-2");
+            if (!timeRunningTeam2Element) {
+              timeStartTeam2 = null;
+              return;
+            }
 
-          intervalClockTeam2 = setInterval(() => {
-            now = getTimeNow();
-            timeRunningTeam2Element.innerHTML = getTimeRunningSTring(
-              timeStartTeam2,
-              now
-            );
-          }, 250);
+            intervalClockTeam2 = setInterval(() => {
+              now = getTimeNow();
+              timeRunningTeam2Element.innerHTML = getTimeRunningSTring(
+                timeStartTeam2,
+                now
+              );
+            }, 250);
+          }, 1000);
         }
         if (status === "stop") {
           const stopTime = getTimeNow();
