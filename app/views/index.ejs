@@ -251,7 +251,7 @@
             return;
           }
           const timeRunning = runningTimeEsp
-            ? getTimeRunningSTring(0 - Number(runningTimeEsp))
+            ? getTimeRunningSTring(0, Number(runningTimeEsp))
             : getTimeRunningSTring(timeStartTeam1, stopTime);
           if (timeRunningTeam1Element) {
             timeRunningTeam1Element.innerHTML = timeRunning;
