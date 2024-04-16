@@ -254,7 +254,7 @@
           let timeRunning = 0;
           if (runningTimeEsp) {
             timeRunningMs = Number(runningTimeEsp);
-            timeRunning = getTimeRunningSTring(Number(runningTimeEsp), 0);
+            timeRunning = getTimeRunningSTring(0, Number(runningTimeEsp));
           } else {
             timeRunningMs = stopTime - timeStartTeam1;
             timeRunning = getTimeRunningSTring(timeStartTeam1, stopTime);
@@ -302,7 +302,7 @@
           let timeRunning = 0;
           if (runningTimeEsp) {
             timeRunningMs = Number(runningTimeEsp);
-            timeRunning = getTimeRunningSTring(Number(runningTimeEsp), 0);
+            timeRunning = getTimeRunningSTring(0, Number(runningTimeEsp));
           } else {
             timeRunningMs = stopTime - timeStartTeam2;
             timeRunning = getTimeRunningSTring(timeStartTeam2, stopTime);
